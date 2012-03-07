@@ -215,31 +215,31 @@ NSModuleHandle NSLoadModule(const char *path) {
 }
 #else
 
-NSModuleHandle NSLoadModule(const char *path) {
-   NSModuleHandle handle;
+NSModuleHandle NSLoadModule(const char *path)
+{
+    NSModuleHandle handle;
 
-   // dlopen doesn't accept partial paths.
-   if (path[0] != '/' && path[0] != '.') {
-      char buf[MAXPATHLEN];
+    // dlopen doesn't accept partial paths.
+    if (path[0] != '/' && path[0] != '.') {
+        char buf[MAXPATHLEN];
 
-      if (getcwd(buf, MAXPATHLEN) != NULL) {
-          strncat(buf, "/", MAXPATHLEN);
-          strncat(buf, path, MAXPATHLEN);
-          path = buf;
-      }
-      else {
-          NSCLog("NSLoadModule: cannot find cwd and relative path specified");
-          return NULL;
-      }
-   }
+        if (getcwd(buf, MAXPATHLEN) != NULL) {
+            strncat(buf, "/", MAXPATHLEN);
+            strncat(buf, path, MAXPATHLEN);
+            path = buf;
+        } else {
+            NSCLog("NSLoadModule: cannot find cwd and relative path specified");
+            return NULL;
+        }
+    }
 
-   handle = dlopen(path, RTLD_NOW | RTLD_GLOBAL);
-   if (NSLastModuleError() != NULL){
-       NSCLog(NSLastModuleError());
-       handle = NULL;
-   }
+    handle = dlopen(path, RTLD_NOW | RTLD_GLOBAL);
+    if (NSLastModuleError() != NULL) {
+        NSCLog(NSLastModuleError());
+        handle = NULL;
+    }
 
-   return handle;
+    return handle;
 }
 #endif
 
